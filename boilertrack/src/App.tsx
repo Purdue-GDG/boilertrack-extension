@@ -6,6 +6,7 @@ import './App.css'
 function App() {
   const [count, setCount] = useState(0)
 
+//MAKE SURE YOU HAVE npm install -D @types/chrome so that you can use type script to access chrome extension commands
   return (
     <>
       <div>

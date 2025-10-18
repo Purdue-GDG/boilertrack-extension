@@ -1,6 +1,8 @@
 {
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.2.0",
+    "@types/chrome": "^0.1.24",
+    "types": "file:../../../../../../chrome",
     "vite": "^7.1.10"
   }
 }
