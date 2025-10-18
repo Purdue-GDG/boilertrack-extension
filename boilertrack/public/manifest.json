@@ -8,5 +8,15 @@
         "32": "images/gdglogo32.png",
         "48": "images/gdglogo48.png",
         "128": "images/gdglogo128.png"
-      }
+      },
+      "action": {
+        "default_popup": "index.html"
+      },
+      "permissions": [
+        "scripting"
+      ],
+      "host_permissions": [
+        "https://*/*",
+        "https://*/*"
+      ]
 }
