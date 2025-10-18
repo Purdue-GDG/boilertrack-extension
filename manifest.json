@@ -1,5 +1,4 @@
 {
-    "_comment": "Link to manifest refrences: https://developer.chrome.com/docs/extensions/reference/manifest",
     
     "manifest_version": 3,
     "name": "Boilertrack",
@@ -9,7 +8,19 @@
         "32": "images/gdglogo32.png",
         "48": "images/gdglogo48.png",
         "128": "images/gdglogo128.png"
-      }
+      },
 
+      "background": {
+        "service_worker": "service-worker.js",
+        "type": "module"
+      },
+      "action": { },
+      "permissions": [
+        "scripting"
+      ],
+      "host_permissions": [
+        "http://*/*", 
+        "https://*/*"
+      ]
 
 }

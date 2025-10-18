@@ -1,0 +1,3 @@
+Link to manifest refrences: 
+https://developer.chrome.com/docs/extensions/reference/manifest
+(super helpful)
