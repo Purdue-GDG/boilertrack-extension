@@ -16,7 +16,18 @@ export default defineManifest({
     default_popup: 'index.html',
   },
 
-  permissions: ['scripting'],
+  permissions: ['scripting', 'tabs', 'activeTab'],
 
   host_permissions: ['https://*/*', 'http://*/*'], // fixed duplicate, added http
+
+  content_security_policy: {
+    extension_pages: "script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; object-src 'self';"
+  },
+
+  web_accessible_resources: [
+    {
+      resources: ['tesseract/*'],
+      matches: ['<all_urls>']
+    }
+  ],
 });
