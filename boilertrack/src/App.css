@@ -18,6 +18,95 @@
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
+.app-wrapper,
+.login-wrapper,
+.config-warning,
+.auth-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+
+.auth-email {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #4b5563;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  text-align: left;
+}
+.login-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.login-input {
+  padding: 0.65rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 0.95rem;
+}
+
+.login-input:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.login-error {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #b91c1c;
+}
+
+.login-message {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #065f46;
+}
+
+.login-submit {
+  align-self: flex-end;
+  padding: 0.65rem 1.5rem;
+  background-color: #2563eb;
+  color: #ffffff;
+}
+
+.login-toggle {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.login-toggle-button {
+  border: none;
+  background: none;
+  padding: 0;
+  color: #2563eb;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.login-toggle-button:hover {
+  text-decoration: underline;
+}
+
+.config-warning,
+.auth-loading {
+  min-height: 180px;
+  justify-content: center;
+}
+
+
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);

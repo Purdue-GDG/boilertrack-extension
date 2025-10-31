@@ -1,8 +1,14 @@
 {
   "devDependencies": {
-    "@crxjs/vite-plugin": "^2.2.0",
-    "@types/chrome": "^0.1.24",
+    "@crxjs/vite-plugin": "^2.2.1",
+    "@types/chrome": "^0.1.27",
+    "@vitejs/plugin-react-swc": "^4.2.0",
     "types": "file:../../../../../../chrome",
-    "vite": "^7.1.10"
+    "vite": "^7.1.12"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.78.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
   }
 }

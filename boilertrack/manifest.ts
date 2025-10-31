@@ -3,8 +3,7 @@ import { defineManifest } from '@crxjs/vite-plugin';
 export default defineManifest({
   manifest_version: 3,
   name: 'Boilertrack',
-  version: '1.0.0',
-
+  version: '1.0.1',
   icons: {
     16: 'images/gdglogo16.png',
     32: 'images/gdglogo32.png',
@@ -16,7 +15,7 @@ export default defineManifest({
     default_popup: 'index.html',
   },
 
-  permissions: ['scripting'],
+  permissions: ['scripting', 'identity', 'storage'],
 
   host_permissions: ['https://*/*', 'http://*/*'], // fixed duplicate, added http
 });
