@@ -30,11 +30,7 @@ function App() {
       }
     };
 
-    // Capture screen image
-    // Note: Full OCR requires either:
-    // 1. A backend API (Google Vision API, AWS Textract, etc.)
-    // 2. A library that works in extensions (most require workers which have CSP issues)
-    // For now, we capture the image and log it - you can process it via API if needed
+    // Capture screen image and perform OCR using service worker
     const captureScreenImageAndOCR = async () => {
       try {
         const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -44,18 +40,23 @@ function App() {
             format: 'png'
           });
           
-          console.log('Captured screen image');
-          console.log('Image data URL length:', dataUrl.length);
+          console.log('Captured screen image, sending to service worker for OCR...');
           
-          // The image is captured and can be processed
-          // To extract text from the image, you would need to:
-          // 1. Send to a backend OCR API (Google Cloud Vision, AWS Textract, etc.)
-          // 2. Use a browser-based OCR library (most require workers with CSP restrictions)
-          // 3. Process via a Chrome extension background service worker
-          
-          // Example: The image is available as dataUrl (base64 PNG)
-          // You can send this to an OCR API endpoint
-          console.log('Image ready for OCR processing (data URL available)');
+          // Send image to service worker for OCR processing
+          try {
+            const response = await chrome.runtime.sendMessage({
+              action: 'performOCR',
+              imageDataUrl: dataUrl
+            });
+            
+            if (response && response.success) {
+              console.log('Extracted text from image (OCR):', response.text);
+            } else {
+              console.error('OCR failed:', response?.error || 'Unknown error');
+            }
+          } catch (err) {
+            console.error('Error communicating with service worker:', err);
+          }
         }
       } catch (err) {
         console.error('Error capturing screen image:', err);

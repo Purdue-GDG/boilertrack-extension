@@ -16,13 +16,21 @@ export default defineManifest({
     default_popup: 'index.html',
   },
 
-  permissions: ['scripting', 'tabs', 'activeTab'],
+  background: {
+    service_worker: 'src/background.ts',
+    type: 'module',
+  },
+
+  permissions: ['scripting', 'tabs', 'activeTab', 'offscreen'],
 
   host_permissions: ['https://*/*', 'http://*/*'], // fixed duplicate, added http
 
   content_security_policy: {
     extension_pages: "script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; object-src 'self';"
   },
+  
+  // Note: Offscreen documents use extension_pages CSP by default
+  // If needed, we can update CSP to allow CDN for Tesseract workers
 
   web_accessible_resources: [
     {
