@@ -31,7 +31,7 @@ const [message, setMessage] = useState<string | null>(null);
         if (mode === 'Sign-in') {
             return 'Sign in to Boilertrack'
         } else if(mode === 'Sign-up') {
-            return 'Create Boilertrack Acc'
+            return 'Create Boilertrack Account'
         }
         else {
             return '';
@@ -103,7 +103,7 @@ const [message, setMessage] = useState<string | null>(null);
 
      const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         //this runs on a submit button press. sending info to supabase
-        event.preventDefault;
+        event.preventDefault();
         //clear errors
         resetStatus();
         setSubmitting(true);
