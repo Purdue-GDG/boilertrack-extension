@@ -10,12 +10,13 @@ interface loginParms {
     onAuthenticated: (session: Session) => void;
 }
 
-const authPage = ({supabase, onAuthenticated}: loginParms) => {
+// This line was erroring on my VSCode typscrint lint, it should be capitalized
+const AuthPage = ({ supabase, onAuthenticated }: loginParms) => {
 
 //if the client is logging in or signing up
-    const [mode, setMode] = useState<AuthMode>('Sign-in');
-//if the client is currently submitting their info 
-    const [submitting, setSubmitting] = useState(false);
+const [mode, setMode] = useState<AuthMode>('Sign-in');
+//if the client is currently submitting their info
+const [submitting, setSubmitting] = useState(false);
 //The clients entered email
     const [email, setEmail] = useState('');
 //the clients entered psasword
@@ -93,6 +94,7 @@ const authPage = ({supabase, onAuthenticated}: loginParms) => {
             }
         )
     }
+
 
 
     const title = useMemo(() => {
@@ -319,4 +321,4 @@ const authPage = ({supabase, onAuthenticated}: loginParms) => {
     );
 };
 
-export default authPage;
+export default AuthPage;
