@@ -36,12 +36,14 @@ const authPage = ({supabase, onAuthenticated}: loginParms) => {
         oAuthurl.searchParams.set('client_id', oauth2.client_id);
         oAuthurl.searchParams.set('response_type', 'id_token');
         oAuthurl.searchParams.set('access_type', 'offline');
-        oAuthurl.searchParams.set('redirect_uri', `https://${chrome.runtime.id}.chromiumapp.org`);
+        oAuthurl.searchParams.set('redirect_uri', `ghoipfehkaoepanbiamhbbgddlalchif.chromiumapp.org`);
         oAuthurl.searchParams.set('scope', oauth2.scopes.join(' '));
     } else {
         console.error('OAuth2 config is missing from manifest.json');
     }
 
+
+    //function that is ran when the google auth button is pressed
     const googleLogin = async () => {
         chrome.identity.launchWebAuthFlow(
             {
@@ -50,16 +52,42 @@ const authPage = ({supabase, onAuthenticated}: loginParms) => {
             },
             async (redirectedTo) => {
 
-                if (chrome.runtime.lastError) {
-                    // auth was not successful
+                //if the page dosent open, throw an error:
+                if (chrome.runtime.lastError || !redirectedTo) {
+                    //console.error(chrome.runtime.lastError); for debugging
+                    setError('Google sign-in failed');
+                    return;
                 } else {
                     // auth was successful, extract the ID token from the redirectedTo URL
+                    // grab the auth token google provides and pass it to supabase
                     const url = new URL(redirectedTo)
-                    const params = new URLSearchParams(url.hash)
-                    const { data, error } = await supabase.auth.signInWithIdToken({
+                    const params = new URLSearchParams(url.hash.replace(/^#/, ''));
+                    const idToken = params.get('id_token');
+
+                    // if for some reason there WASNT a token, throw an error.
+                    if (!idToken) {
+                        console.error('No id_token found in redirect URL');
+                        setError('Google sign-in failed: missing id token');
+                        return;
+                    }
+
+                    //give supabase the token and ask for a signin
+                    const { data, error: idTokenError } = await supabase.auth.signInWithIdToken({
                         provider: 'google',
-                        token: params.get('id_token'),
-                    })
+                        token: idToken,
+                    });
+
+                    // if supabase google token auth throws something, print that error:
+                    if (idTokenError) {
+                        setError(idTokenError.message);
+                        return;
+                    }
+
+                    // BANG WERE IN :)
+                    if (data.session) {
+                        onAuthenticated(data.session);
+                    }
+
                 }
             }
         )
