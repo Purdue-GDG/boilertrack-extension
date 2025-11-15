@@ -21,9 +21,13 @@ For **vite**, the project is held in boilertrack folder
 **Supabase** 
 Now that Supabase has been included, in order to properly run the extension, you need to put the Supabase API key and Project URL (which can be found in project settings on Supabase) into a .env.local file.
 this should be constructed in this format:
+NEW: with google auth addition, a google auth client id needs to be added with this format
+
 ```
 VITE_SUPABASE_URL=<url>   
 VITE_SUPABASE_ANON_KEY=<key>
+SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_SECRET=<secret>
 ```
+if you need any of those urls or keys dm me (liam)
 
 **basic-no-vite** is a folder containing an unpacked chrome extension NOT using vite. 
