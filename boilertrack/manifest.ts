@@ -18,7 +18,16 @@ export default defineManifest({
     permissions: ['scripting', 'identity', 'storage', 'tabs'],
 
     oauth2: {
-        client_id: "897649700187-4dm7s2h1hkn9hifmnepg8f5i3stf5n21.apps.googleusercontent.com",
+
+        //IMPORTANT: google cloud oauth is setup a little weird. Heres why:
+
+        //Google cloud oauth is setup to a web app even though this is a chrome extension.
+        //origonally I attempted to do this on the google cloud dashboard with a client id registered
+        //for a chrome extension but kept coming up with "URI redirect" errors. Don't understand why.
+        //When I altered the client id on the oauth on google cloud to be for a web app and added
+        //the extensions local url as the callback url for the google oauth, it works!!!
+
+        client_id: "897649700187-q8tee8fmp1g65j53vnn6tkvn9cubr04p.apps.googleusercontent.com",
         scopes: ['openid', 'profile', 'email'],
     },
 

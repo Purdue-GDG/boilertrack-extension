@@ -36,8 +36,9 @@ const authPage = ({supabase, onAuthenticated}: loginParms) => {
         oAuthurl.searchParams.set('client_id', oauth2.client_id);
         oAuthurl.searchParams.set('response_type', 'id_token');
         oAuthurl.searchParams.set('access_type', 'offline');
-        oAuthurl.searchParams.set('redirect_uri', `ghoipfehkaoepanbiamhbbgddlalchif.chromiumapp.org`);
+        oAuthurl.searchParams.set('redirect_uri', chrome.identity.getRedirectURL());
         oAuthurl.searchParams.set('scope', oauth2.scopes.join(' '));
+        // console.log(oAuthurl.searchParams.get('redirect_uri'));
     } else {
         console.error('OAuth2 config is missing from manifest.json');
     }
