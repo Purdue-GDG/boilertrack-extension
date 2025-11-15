@@ -3,7 +3,7 @@
 import {createWorker} from '.tesseract-local/tesseract.min.js';
 
 //do the actual OCR
-async function OCRfunc(imageURL: String) {
+async function OCRfunc(imageURL: string) {
     console.log("Starting OCR process");
 
     //get the path of the public worker for tesseract

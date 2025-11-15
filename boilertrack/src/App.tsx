@@ -8,11 +8,15 @@ import {supabase} from './supabaseClient';
 import './App.css';
 import './App.css'
 
+
 function App() {
 
     const [session, setSession] = useState<Session | null>(null);
     const [initializing, setInitializing] = useState(true);
     const authClient = supabase;
+
+
+    const [ocrText, setOcrText] = useState('Click to run OCR...');
 
     useEffect(() => {
         const client = authClient;
@@ -81,9 +85,34 @@ function App() {
         setSession(null);
     };
 
+
+    //BELOW IS A ROUGH TEST AND MAY NOT BE IDEAL OR WORK
+    const handleOcrClick = () => {
+        setOcrText('Processing...');
+        const testImageUrl = '[https://tesseract.projectnaptha.com/img/eng_bw.png](https://tesseract.projectnaptha.com/img/eng_bw.png)';
+
+        // Send a message to the background script
+        chrome.runtime.sendMessage(
+            {
+                type: 'RUN_OCR',
+                imageUrl: testImageUrl
+            },
+            (response) => {
+
+                if (response.success) {
+                    console.log('OCR Success:', response.text);
+
+                } else {
+                    console.error('OCR Failed:', response.error);
+
+                }
+            }
+        );
+    }
     const startTracking = async () => {
         //TODO: make this save the website to the supabase user data and also start tracking it within the extension
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            //currently this prints out the current tab URL
             console.log(tabs[0].url);
         });
     };
@@ -95,8 +124,12 @@ function App() {
             </div>
             <div className="card">
                 <h1>Tracking</h1>
-                <img src={trackingImage} className="tracking-button" onClick={startTracking} />
+                <img src={trackingImage} className="tracking-button" onClick={handleOcrClick} />
                 <p>
+                    {ocrText}
+                </p>
+                <p onClick={startTracking}>
+
                     logged in as: {session.user.email}
                 </p>
                 <button onClick={handleSignOut}>
