@@ -11,12 +11,12 @@ interface loginParms {
 }
 
 // This line was erroring on my VSCode typscrint lint, it should be capitalized
-const AuthPage = ({ supabase, onAuthenticated }: loginParms) => {
+const AuthPage = ({supabase, onAuthenticated}: loginParms) => {
 
 //if the client is logging in or signing up
-const [mode, setMode] = useState<AuthMode>('Sign-in');
+    const [mode, setMode] = useState<AuthMode>('Sign-in');
 //if the client is currently submitting their info
-const [submitting, setSubmitting] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
 //The clients entered email
     const [email, setEmail] = useState('');
 //the clients entered psasword
@@ -74,7 +74,7 @@ const [submitting, setSubmitting] = useState(false);
                     }
 
                     //give supabase the token and ask for a signin
-                    const { data, error: idTokenError } = await supabase.auth.signInWithIdToken({
+                    const {data, error: idTokenError} = await supabase.auth.signInWithIdToken({
                         provider: 'google',
                         token: idToken,
                     });
@@ -94,7 +94,6 @@ const [submitting, setSubmitting] = useState(false);
             }
         )
     }
-
 
 
     const title = useMemo(() => {
@@ -213,7 +212,7 @@ const [submitting, setSubmitting] = useState(false);
                 setMode('Sign-in');
             }
         }
-        ;
+
 
 
     };
