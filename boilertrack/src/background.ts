@@ -37,7 +37,7 @@ async function OCRfunc(imageURL: string) {
     }
 }
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
 
     //if ocr has been initizalized, ocr has been told to run, and an image has been provided:
     if (request.action === 'RUN_OCR' && request.imageURL) {
