@@ -6,15 +6,37 @@ import Login from './authPage';
 import {supabase} from './supabaseClient';
 import syncedIcon from './assets/synced.svg';
 import unsyncedIcon from './assets/unsynced.svg';
+import gcalAddIcon from './assets/gcal_add.svg';
+import checkedIcon from './assets/checked.svg';
+import uncheckedIcon from './assets/unchecked.svg';
 import './App.css';
-import './App.css'
+
+interface Task {
+    id: string;
+    name: string;
+    dueDate: string;
+    class: string;
+    classColor: string;
+}
 
 function App() {
 
     const [session, setSession] = useState<Session | null>(null);
     const [initializing, setInitializing] = useState(true);
     const [isSynced, setIsSynced] = useState(false);
+    const [showTaskSelection, setShowTaskSelection] = useState(false);
+    const [selectedTasks, setSelectedTasks] = useState<Set<string>>(new Set());
     const authClient = supabase;
+
+    // Hardcoded task data matching the image MOCKUP FOR NOW, TBD: fetch from the OCR
+    const tasks: Task[] = [
+        { id: '1', name: 'Project 5', dueDate: '11/11/2022', class: 'TDM', classColor: '#E8B4D9' },
+        { id: '2', name: 'Mary Poppins Reading', dueDate: '10/22/2022', class: 'SCLA', classColor: '#D4B3E8' },
+        { id: '3', name: 'Lab Reflection 9', dueDate: '05/22/2022', class: 'CHEM', classColor: '#B3E8B3' },
+        { id: '4', name: 'Chain Rule Worksheet', dueDate: '07/14/2022', class: 'CALC I', classColor: '#E8D4B3' },
+        { id: '5', name: 'Group Presentation', dueDate: '12/04/2021', class: 'CHEM', classColor: '#B3E8B3' },
+        { id: '6', name: 'Project 6', dueDate: '02/02/2022', class: 'TDM', classColor: '#E8B4D9' },
+    ];
 
     useEffect(() => {
         const client = authClient;
@@ -90,11 +112,41 @@ function App() {
         });
     };
 
-    const handleToggleSync = () => {
-        setIsSynced((prev) => !prev);
-        if (isSynced) {
-            startTracking();
+    const handleToggleSync = () => { // Big sync button handler
+        if (!isSynced) {
+            setShowTaskSelection(true);
+        } else {
+            setIsSynced(false);
         }
+    };
+
+    const handleTaskToggle = (taskId: string) => {
+        setSelectedTasks((prev) => {
+            const newSet = new Set(prev);
+            if (newSet.has(taskId)) {
+                newSet.delete(taskId);
+            } else {
+                newSet.add(taskId);
+            }
+            return newSet;
+        });
+    };
+
+    const handleSelectAll = () => {
+        if (selectedTasks.size === tasks.length) {
+            // Deselect all with top button
+            setSelectedTasks(new Set());
+        } else {
+            // Select all with top button
+            setSelectedTasks(new Set(tasks.map(task => task.id)));
+        }
+    };
+
+    const handleAddToCalendar = () => {
+        // Return to sync view and mark as synced
+        setShowTaskSelection(false);
+        setIsSynced(true);
+        startTracking();
     };
 
     //any js in this html will run internally within the popup
@@ -141,32 +193,116 @@ function App() {
                 </button>
             </div>
 
-            {/* Sync Section */}
-            <div className="sync-section">
-                <h2 className="sync-title">{isSynced ? 'Synced!' : 'Sync Site?'}</h2>
+            {showTaskSelection ? (
+                /* Task Selection Grid MOCKUP */
+                <div className="task-selection-container">
+                    <div className="task-table">
+                        <div className="task-header">
+                            <div className="task-header-cell checkbox-header">
+                                <img
+                                    src={selectedTasks.size === tasks.length && tasks.length > 0 ? checkedIcon : uncheckedIcon}
+                                    alt="Select all"
+                                    onClick={handleSelectAll}
+                                    className="task-checkbox-icon"
+                                />
+                            </div>
+                            <div className="task-header-cell task-name-header">
+                                <svg className="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <line x1="8" y1="6" x2="21" y2="6"/>
+                                    <line x1="8" y1="12" x2="21" y2="12"/>
+                                    <line x1="8" y1="18" x2="21" y2="18"/>
+                                    <line x1="3" y1="6" x2="3.01" y2="6"/>
+                                    <line x1="3" y1="12" x2="3.01" y2="12"/>
+                                    <line x1="3" y1="18" x2="3.01" y2="18"/>
+                                </svg>
+                                Task
+                            </div>
+                            <div className="task-header-cell due-header">
+                                <svg className="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                    <line x1="16" y1="2" x2="16" y2="6"/>
+                                    <line x1="8" y1="2" x2="8" y2="6"/>
+                                    <line x1="3" y1="10" x2="21" y2="10"/>
+                                </svg>
+                                Due
+                            </div>
+                            <div className="task-header-cell class-header">
+                                <svg className="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <line x1="8" y1="6" x2="21" y2="6"/>
+                                    <line x1="8" y1="12" x2="21" y2="12"/>
+                                    <line x1="8" y1="18" x2="21" y2="18"/>
+                                    <line x1="3" y1="6" x2="3.01" y2="6"/>
+                                    <line x1="3" y1="12" x2="3.01" y2="12"/>
+                                    <line x1="3" y1="18" x2="3.01" y2="18"/>
+                                </svg>
+                                Class
+                            </div>
+                        </div>
+                        {tasks.map((task) => (
+                            <div key={task.id} className="task-row">
+                                <div className="task-cell checkbox-cell">
+                                    <img
+                                        src={selectedTasks.has(task.id) ? checkedIcon : uncheckedIcon}
+                                        alt={selectedTasks.has(task.id) ? 'Checked' : 'Unchecked'}
+                                        onClick={() => handleTaskToggle(task.id)}
+                                        className="task-checkbox-icon"
+                                    />
+                                </div>
+                                <div className="task-cell task-name-cell">
+                                    {task.name}
+                                    <svg className="edit-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                    </svg>
+                                </div>
+                                <div className="task-cell due-cell">{task.dueDate}</div>
+                                <div className="task-cell class-cell">
+                                    <span className="class-label" style={{ backgroundColor: task.classColor }}>
+                                        {task.class}
+                                    </span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="task-footer">
+                        <div className="selected-count">
+                            ({selectedTasks.size}) tasks selected
+                        </div>
+                        <button className="add-button" onClick={handleAddToCalendar}>
+                            <img src={gcalAddIcon} alt="Add to Calendar" className="add-button-icon" />
+                        </button>
+                    </div>
+                </div>
+            ) : (
+                <>
+                    {/* Sync Section */}
+                    <div className="sync-section">
+                        <h2 className="sync-title">{isSynced ? 'Synced!' : 'Sync Site?'}</h2>
 
-                {/* Sync Button */}
-                <button
-                    className={`sync-button ${isSynced ? 'synced' : ''}`}
-                    type="button"
-                    onClick={handleToggleSync}
-                >
-                    <img
-                        src={isSynced ? syncedIcon : unsyncedIcon}
-                        alt={isSynced ? 'Synced' : 'Not synced'}
-                        className="sync-icon"
-                    />
-                </button>
-            </div>
+                        {/* Sync Button */}
+                        <button
+                            className={`sync-button ${isSynced ? 'synced' : ''}`}
+                            type="button"
+                            onClick={handleToggleSync}
+                        >
+                            <img
+                                src={isSynced ? syncedIcon : unsyncedIcon}
+                                alt={isSynced ? 'Synced' : 'Not synced'}
+                                className="sync-icon"
+                            />
+                        </button>
+                    </div>
 
-            <div className="card">
-                <p>
-                    logged in as: {session.user.email}
-                </p>
-                <button onClick={handleSignOut}>
-                    sign out
-                </button>
-            </div>
+                    <div className="card">
+                        <p>
+                            logged in as: {session.user.email}
+                        </p>
+                        <button onClick={handleSignOut}>
+                            sign out
+                        </button>
+                    </div>
+                </>
+            )}
         </div>
     )
 }

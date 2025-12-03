@@ -1,8 +1,11 @@
+/* Font from the Figma design file */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
 :root {
   font-family: "acumin-pro", sans-serif;
   font-weight: 400;
   font-style: normal;
-  
+
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
@@ -21,6 +24,7 @@
   --color-off-white: #D8DADE;
 
   /* Spacing Variables */
+  --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 16px;
   --spacing-lg: 24px;

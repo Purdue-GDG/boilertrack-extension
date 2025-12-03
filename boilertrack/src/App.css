@@ -343,3 +343,177 @@
   color: #888;
 }
 
+/* Task Selection Grid Styles */
+.task-selection-container {
+  width: 100%;
+  height: calc(100% - 60px);
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-md);
+  box-sizing: border-box;
+  overflow-y: auto;
+  margin-top: var(--spacing-md);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.task-table {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: var(--spacing-md);
+}
+
+.task-header {
+  display: grid;
+  grid-template-columns: 40px 1fr 120px 100px;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid rgba(216, 218, 222, 0.2);
+  margin-bottom: var(--spacing-sm);
+}
+
+.task-header-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-off-white);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.header-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--color-off-white);
+  opacity: 0.7;
+}
+
+.task-row {
+  display: grid;
+  grid-template-columns: 40px 1fr 120px 100px;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) 0;
+  align-items: center;
+  border-bottom: 1px solid rgba(216, 218, 222, 0.1);
+}
+
+.task-cell {
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+  color: var(--color-off-white);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 400;
+}
+
+.checkbox-cell {
+  justify-content: center;
+}
+
+.task-checkbox-icon {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  display: block;
+  user-select: none;
+}
+
+.checkbox-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.task-name-cell {
+  gap: var(--spacing-sm);
+  position: relative;
+  align-items: center;
+  display: flex;
+}
+
+.edit-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--color-off-white);
+  opacity: 0.5;
+  margin-left: var(--spacing-sm);
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: middle;
+  margin-top: 1px;
+}
+
+.due-cell {
+  font-size: 0.875rem;
+  color: var(--color-off-white);
+  white-space: nowrap;
+}
+
+.class-cell {
+  justify-content: flex-start;
+}
+
+.class-label {
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-charcoal);
+  white-space: nowrap;
+  display: inline-block;
+  min-width: 60px;
+  text-align: center;
+}
+
+.task-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: rgba(30, 32, 37, 0.8);
+  border-radius: 8px;
+  margin-top: auto;
+  min-height: 50px;
+}
+
+.selected-count {
+  font-size: 0.875rem;
+  color: var(--color-off-white);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  opacity: 0.7;
+}
+
+.add-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: opacity 0.2s;
+  outline: none !important; // If you remove this, there will be an unwanted outline on add button
+  -webkit-tap-highlight-color: transparent; // Line above overrides index.css focus outline for global buttons
+}
+
+.add-button:hover {
+  opacity: 0.8;
+}
+
+.add-button:focus,
+.add-button:focus-visible,
+.add-button:active {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.add-button-icon {
+  width: 130px;
+  height: 57px;
+  object-fit: contain;
+  display: block;
+}
+
