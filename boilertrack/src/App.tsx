@@ -4,11 +4,13 @@ import {useEffect, useState} from 'react';
 import type {Session} from '@supabase/supabase-js';
 import Login from './authPage';
 import {supabase} from './supabaseClient';
+import {trackedSitesService} from './trackedSiteServices';
 import syncedIcon from './assets/synced.svg';
 import unsyncedIcon from './assets/unsynced.svg';
 import gcalAddIcon from './assets/gcal_add.svg';
 import checkedIcon from './assets/checked.svg';
 import uncheckedIcon from './assets/unchecked.svg';
+
 import './App.css';
 
 interface Task {
@@ -26,6 +28,7 @@ function App() {
     const [isSynced, setIsSynced] = useState(false);
     const [showTaskSelection, setShowTaskSelection] = useState(false);
     const [selectedTasks, setSelectedTasks] = useState<Set<string>>(new Set());
+    const [currentTab, setCurrentTab] = useState<chrome.tabs.Tab | null>(null);
     const authClient = supabase;
 
     // Hardcoded task data matching the image MOCKUP FOR NOW, TBD: fetch from the OCR
@@ -37,6 +40,23 @@ function App() {
         { id: '5', name: 'Group Presentation', dueDate: '12/04/2021', class: 'CHEM', classColor: '#B3E8B3' },
         { id: '6', name: 'Project 6', dueDate: '02/02/2022', class: 'TDM', classColor: '#E8B4D9' },
     ];
+
+    useEffect(() => {
+        if (session) {
+            chrome.tabs.query({active: true, currentWindow: true}, async (tabs) => {
+                if (tabs[0]) {
+
+                    setCurrentTab(tabs[0]);
+
+                    // Check if current site is already tracked
+                    if (tabs[0].url) {
+                        const tracked = await trackedSitesService.isSiteTracked(tabs[0].url);
+                        setIsSynced(tracked);
+                    }
+                }
+            });
+        }
+    }, [session]);
 
     useEffect(() => {
         const client = authClient;
@@ -106,10 +126,47 @@ function App() {
     };
 
     const startTracking = async () => {
+
+        try {
+
+            chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+                console.log(tabs[0].url);
+
+            });
+
+            if (!currentTab) {
+                throw new Error('No active tab available to track.');
+            }
+
+            const tabUrl = currentTab.url;
+            if (!tabUrl) {
+                throw new Error('Active tab has no URL to track.');
+            }
+
+            const result = await trackedSitesService.addTrackedSite(
+
+                tabUrl,
+                currentTab.title || null,
+                currentTab.favIconUrl || null
+            );
+
+            console.log('Site tracked successfully:', result);
+
+            // Show success message
+            if (result.isNew) {
+                console.log('New site added to tracking!');
+            } else {
+                console.log('Site visit count updated!');
+            }
+
+            setIsSynced(true);
+        } catch (error) {
+            console.error('Error tracking site:', error);
+            alert('Failed to track site. Please try again.');
+            setIsSynced(false);
+        }
         //TODO: make this save the website to the supabase user data and also start tracking it within the extension
-        chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-            console.log(tabs[0].url);
-        });
+
     };
 
     const handleToggleSync = () => { // Big sync button handler
