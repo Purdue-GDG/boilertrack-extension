@@ -198,10 +198,14 @@ function App() {
     };
 
     const handleAddToCalendar = () => {
-        // Return to sync view and mark as synced
-        setShowTaskSelection(false);
-        setIsSynced(true);
-        chrome.storage.local.set({ isSynced: true });
+        // Close the window when add is clicked
+        window.close();
+
+        // PREV BEHAVIOR (it would just be a pain to have the user keep x-ing out themselves)
+        // Return to sync view -> green sync butotn
+        // setShowTaskSelection(false);
+        // setIsSynced(true);
+        // chrome.storage.local.set({ isSynced: true });
         startTracking();
     };
 
