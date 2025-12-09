@@ -17,6 +17,10 @@ export default defineManifest({
 
     permissions: ['scripting', 'identity', 'storage', 'tabs'],
 
+    background: {
+        service_worker: 'src/background.ts',
+    },
+
     oauth2: {
 
         //IMPORTANT: google cloud oauth is setup a little weird. Heres why:
@@ -32,4 +36,19 @@ export default defineManifest({
     },
 
     host_permissions: ['https://*/*', 'http://*/*'], // fixed duplicate, added http
+
+    content_scripts: [
+        {
+            matches: ['https://*/*', 'http://*/*'],
+            js: ['src/content.ts'],
+            run_at: 'document_idle',
+        },
+    ],
+
+    web_accessible_resources: [
+        {
+            resources: ['assets/*.svg', 'images/*.svg'],
+            matches: ['https://*/*', 'http://*/*'],
+        },
+    ],
 });
