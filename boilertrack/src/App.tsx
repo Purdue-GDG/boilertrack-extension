@@ -7,7 +7,6 @@ import {supabase} from './supabaseClient';
 import {trackedSitesService} from './trackedSiteServices';
 import syncedIcon from './assets/synced.svg';
 import unsyncedIcon from './assets/unsynced.svg';
-import gcalAddIcon from './assets/gcal_add.svg';
 import checkedIcon from './assets/checked.svg';
 import uncheckedIcon from './assets/unchecked.svg';
 
@@ -94,6 +93,31 @@ function App() {
 
     }, [authClient]);
 
+    // For messages from content script to show task list
+    useEffect(() => {
+        const messageListener = (message: { action: string }, _sender: chrome.runtime.MessageSender, sendResponse: (response?: { success: boolean }) => void) => {
+            if (message.action === 'showTaskList') {
+                setShowTaskSelection(true);
+                sendResponse({ success: true });
+            }
+            return true;
+        };
+
+        chrome.runtime.onMessage.addListener(messageListener);
+
+        // Check storage on mount to see if we should show task list
+        chrome.storage.local.get(['showTaskList'], (result) => {
+            if (result.showTaskList) {
+                setShowTaskSelection(true);
+                chrome.storage.local.remove(['showTaskList']);
+            }
+        });
+
+        return () => {
+            chrome.runtime.onMessage.removeListener(messageListener);
+        };
+    }, []);
+
     if (!authClient) {
         return (
             <div className="config-warning">
@@ -177,11 +201,56 @@ function App() {
 
     };
 
+    const stopTracking = async () => {
+        try {
+            if (!currentTab) {
+                throw new Error('No active tab available to stop tracking.');
+            }
+
+            const tabUrl = currentTab.url;
+            if (!tabUrl) {
+                throw new Error('Active tab has no URL to stop tracking.');
+            }
+
+            await trackedSitesService.removeTrackedSite(tabUrl);
+            console.log('Site tracking stopped:', tabUrl);
+            setIsSynced(false);
+        } catch (error) {
+            console.error('Error stopping site tracking:', error);
+            alert('Failed to stop tracking. Please try again.');
+        }
+    };
+
     const handleToggleSync = () => { // Big sync button handler
         if (!isSynced) {
-            setShowTaskSelection(true);
+            // Show notification card on the current page when sync is clicked
+            chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+                if (tabs[0]?.id) {
+                    // Check if the tab URL is valid for content scripts
+                    const url = tabs[0].url;
+                    if (!url || url.startsWith('chrome://') || url.startsWith('chrome-extension://') || url.startsWith('edge://')) {
+                        console.warn('Cannot inject content script on this page type');
+                        return;
+                    }
+
+                    chrome.tabs.sendMessage(tabs[0].id, { action: 'showNotification' }, () => {
+                        if (chrome.runtime.lastError) {
+                            const errorMsg = chrome.runtime.lastError.message || 'Unknown error';
+                            // Silently handle "Could not establish connection" - content script may not be loaded on this page
+                            if (!errorMsg.includes('Could not establish connection')) {
+                                console.error('Error sending message:', errorMsg);
+                            }
+                        }
+                    });
+                }
+            });
+            // Show synced state and persist it regardless of whether user clicks Add button
+            setIsSynced(true);
+            startTracking();
+
         } else {
             setIsSynced(false);
+            stopTracking();
         }
     };
 
@@ -209,9 +278,7 @@ function App() {
 
     const handleAddToCalendar = () => {
         // Return to sync view and mark as synced
-        setShowTaskSelection(false);
-        setIsSynced(true);
-        startTracking();
+        window.close();
     };
 
     //any js in this html will run internally within the popup
@@ -334,7 +401,7 @@ function App() {
                             ({selectedTasks.size}) tasks selected
                         </div>
                         <button className="add-button" onClick={handleAddToCalendar}>
-                            <img src={gcalAddIcon} alt="Add to Calendar" className="add-button-icon" />
+                            <img src="/images/gcal_add.svg" alt="Add to Calendar" className="add-button-icon" />
                         </button>
                     </div>
                 </div>
