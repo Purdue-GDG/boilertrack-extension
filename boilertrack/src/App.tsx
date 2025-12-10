@@ -208,6 +208,26 @@ function App() {
 
     };
 
+    const stopTracking = async () => {
+        try {
+            if (!currentTab) {
+                throw new Error('No active tab available to stop tracking.');
+            }
+
+            const tabUrl = currentTab.url;
+            if (!tabUrl) {
+                throw new Error('Active tab has no URL to stop tracking.');
+            }
+
+            await trackedSitesService.removeTrackedSite(tabUrl);
+            console.log('Site tracking stopped:', tabUrl);
+            setIsSynced(false);
+        } catch (error) {
+            console.error('Error stopping site tracking:', error);
+            alert('Failed to stop tracking. Please try again.');
+        }
+    };
+
     const handleToggleSync = () => { // Big sync button handler
         if (!isSynced) {
             // Show notification card on the current page when sync is clicked
@@ -233,10 +253,11 @@ function App() {
             });
             // Show synced state and persist it regardless of whether user clicks Add button
             setIsSynced(true);
-            chrome.storage.local.set({ isSynced: true });
+            startTracking();
+
         } else {
             setIsSynced(false);
-            chrome.storage.local.set({ isSynced: false });
+            stopTracking();
         }
     };
 
@@ -263,15 +284,8 @@ function App() {
     };
 
     const handleAddToCalendar = () => {
-        // Close the window when add is clicked
+        // Return to sync view and mark as synced
         window.close();
-
-        // PREV BEHAVIOR (it would just be a pain to have the user keep x-ing out themselves)
-        // Return to sync view -> green sync butotn
-        // setShowTaskSelection(false);
-        // setIsSynced(true);
-        // chrome.storage.local.set({ isSynced: true });
-        startTracking();
     };
 
 
