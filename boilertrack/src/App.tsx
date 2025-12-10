@@ -86,13 +86,6 @@ function App() {
             setInitializing(false);
         });
 
-        // Load sync state from storage
-        chrome.storage.local.get(['isSynced'], (result) => {
-            if (result.isSynced !== undefined) {
-                setIsSynced(result.isSynced);
-            }
-        });
-
         return () => {
             isMounted = false;
             subscription.unsubscribe();
@@ -287,7 +280,6 @@ function App() {
         // Return to sync view and mark as synced
         window.close();
     };
-
 
     //any js in this html will run internally within the popup
     return (
