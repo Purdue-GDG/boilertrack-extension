@@ -41,6 +41,11 @@ function App() {
         { id: '6', name: 'Project 6', dueDate: '02/02/2022', class: 'TDM', classColor: '#E8B4D9' },
     ];
 
+    // right off the bat when the user opens the application,
+    // the client connects with supabase and determins if the site is being synced.
+    // if the site is being synced already by the client, it sets that boolean to true
+    // therefore the "tracking" icon will go green.
+
     useEffect(() => {
         if (session) {
             chrome.tabs.query({active: true, currentWindow: true}, async (tabs) => {
@@ -125,6 +130,9 @@ function App() {
         setSession(null);
     };
 
+    //instead of start tracking just printing the current URL in the console,
+    // as of dec 9 2025 the start tracking function sends all needed info to supabase to be added to database.
+
     const startTracking = async () => {
 
         try {
@@ -165,7 +173,7 @@ function App() {
             alert('Failed to track site. Please try again.');
             setIsSynced(false);
         }
-        //TODO: make this save the website to the supabase user data and also start tracking it within the extension
+
 
     };
 

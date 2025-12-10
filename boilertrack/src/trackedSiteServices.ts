@@ -4,6 +4,8 @@
 import {supabase} from './supabaseClient';
 
 
+//functions created to communicate with supabase and handle user's tracked website data
+
 export interface TrackedSite {
     id: string;
     user_id: string;
