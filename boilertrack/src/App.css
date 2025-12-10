@@ -494,8 +494,8 @@
   display: flex;
   align-items: center;
   transition: opacity 0.2s;
-  outline: none !important; // If you remove this, there will be an unwanted outline on add button
-  -webkit-tap-highlight-color: transparent; // Line above overrides index.css focus outline for global buttons
+  outline: none !important; /* If you remove this, there will be an unwanted outline on add button */
+  -webkit-tap-highlight-color: transparent; /* Line above overrides index.css focus outline for global buttons */
 }
 
 .add-button:hover {
