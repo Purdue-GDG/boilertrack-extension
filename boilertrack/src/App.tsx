@@ -80,11 +80,12 @@ function App() {
         });
 
         const {
-            data: {subscription},
+            data: { subscription },
         } = client.auth.onAuthStateChange((_event, nextSession) => {
             setSession(nextSession);
             setInitializing(false);
         });
+
 
         return () => {
             isMounted = false;

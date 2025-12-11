@@ -32,7 +32,8 @@ export default defineManifest({
         //the extensions local url as the callback url for the google oauth, it works!!!
 
         client_id: "897649700187-q8tee8fmp1g65j53vnn6tkvn9cubr04p.apps.googleusercontent.com",
-        scopes: ['openid', 'profile', 'email'],
+        //scopes: ['openid', 'email', 'profile', 'https://www.googleapis.com/auth/calendar'],
+        scopes: ['openid', 'email', 'profile'],
     },
 
     host_permissions: ['https://*/*', 'http://*/*'], // fixed duplicate, added http
